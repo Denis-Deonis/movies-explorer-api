@@ -10,6 +10,7 @@
       
 - Роуты для фильмов:
     - `GET /movies` — возвращает все фильмы из базы
+    - `DELETE /movies/:movieId` — удаляет фильм по _id
     - `POST /movies` — создаёт фильм с переданными в теле<details><summary>запроса</summary>
       - country,
       - director,
@@ -21,7 +22,7 @@
       - thumbnail,
       - movieId,
       - nameRU и nameEN
-    - `DELETE /movies/:movieId` — удаляет фильм по _id
+    
  
 ## Директории
 * `/controllers` – содержит файлы описания моделей пользователя и фильма

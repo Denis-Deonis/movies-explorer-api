@@ -4,15 +4,11 @@ const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const { errors } = require('celebrate');
-const { config } = require('dotenv');
 const cors = require('cors');
 
 const authLimiter = require('./middlewares/rateLimiter');
-const {PORT, DB_PATH, BASE_URL,} = require('./utils/constants');
+const {PORT, DB_PATH, BASE_URL,} = require('./utils/config');
 
-if (process.env.NODE_ENV === 'production') {
-  config();
-}
 
 const app = express();
 
