@@ -21,7 +21,7 @@ const movieSchema = new mongoose.Schema(
     },
     description: {
       type: String,
-      required: [true, 'Поле описание должно быть заполнено',],
+      required: [true, 'Поле описание должно быть заполнено'],
     },
     image: {
       type: String,

@@ -7,8 +7,8 @@ const { errors } = require('celebrate');
 const cors = require('cors');
 
 const authLimiter = require('./middlewares/rateLimiter');
-const {PORT, DB_PATH, BASE_URL,} = require('./utils/config');
-
+const { PORT, DB_PATH, BASE_URL } = require('./utils/config');
+const routes = require('./routes/index');
 
 const app = express();
 
@@ -19,6 +19,8 @@ app.use(express.json());
 
 app.use(errors());
 app.use(authLimiter);
+
+app.use(routes);
 
 app.use(
   cors({

@@ -18,8 +18,7 @@ const DEFAULT_ERROR_MESSAGES = {
   BAD_CREDENTIALS: 'Неверный адрес электронной почты или пароль',
   MAX_LIMIT_REACHED:
     'Слишком много попыток регистрации или входа в систему с этого IP-адреса, пожалуйста, повторите попытку через час',
-}
-
+};
 
 module.exports = {
   DEFAULT_SUCCESS_CODE,
@@ -30,5 +29,5 @@ module.exports = {
   NOT_FOUND,
   CONFLICT,
   SERVER_ERROR,
-  DEFAULT_ERROR_MESSAGES
-}
+  DEFAULT_ERROR_MESSAGES,
+};

@@ -8,10 +8,10 @@ const isURL = /^(https?:\/\/)(www\.)?(?!-)[-a-zA-Z0-9@:%._~#=]{1,249}(?<!-)\.[A-
 
 const validationUrl = (url) => {
   if (URL(url)) {
-    return url
+    return url;
   }
-  throw new BadRequestError()
-}
+  throw new BadRequestError();
+};
 
 const validationLogin = celebrate({
   body: Joi.object().keys({
@@ -21,7 +21,7 @@ const validationLogin = celebrate({
       .message('Поле email должно быть заполнено'),
     password: Joi.string().required(),
   }),
-})
+});
 
 const validationCreateUser = celebrate({
   body: Joi.object().keys({
@@ -36,8 +36,7 @@ const validationCreateUser = celebrate({
       .message('Поле email должно быть заполнено'),
     password: Joi.string().required(),
   }),
-})
-
+});
 
 const validationUpdateUser = celebrate({
   body: Joi.object().keys({
@@ -51,21 +50,20 @@ const validationUpdateUser = celebrate({
       .email()
       .message('Поле email должно быть заполнено'),
   }),
-})
+});
 
-const validationId = (schema = 'movieId') =>
-  celebrate({
-    params: Joi.object().keys({
-      [schema]: Joi.string()
-        .required()
-        .custom((value, helpers) => {
-          if (!Types.ObjectId.isValid(value)) {
-            return helpers.message('Передан некорректный id фильма')
-          }
-          return value
-        }),
-    }),
-  })
+const validationId = (schema = 'movieId') => celebrate({
+  params: Joi.object().keys({
+    [schema]: Joi.string()
+      .required()
+      .custom((value, helpers) => {
+        if (!Types.ObjectId.isValid(value)) {
+          return helpers.message('Передан некорректный id фильма');
+        }
+        return value;
+      }),
+  }),
+});
 
 const validationCreateMovie = celebrate({
   body: Joi.object().keys({
@@ -102,8 +100,7 @@ const validationCreateMovie = celebrate({
     nameRU: Joi.string().required().min(1).message('Поле русское название фильма должно быть заполнено'),
     nameEN: Joi.string().required().min(1).message('Поле иностранное название фильма должно быть заполнено'),
   }),
-})
-
+});
 
 module.exports = {
   isURL,
@@ -111,5 +108,5 @@ module.exports = {
   validationCreateUser,
   validationUpdateUser,
   validationCreateMovie,
-  validationId
+  validationId,
 };
