@@ -1,6 +1,7 @@
 const { Movies } = require('../models/movie');
 const { SUCCESS_CREATED_CODE } = require('../utils/constants');
-const { ForbiddenError, handleError } = require('../utils/errors');
+const handleError = require('../utils/handleError');
+const ForbiddenError = require('../utils/errors/ForbiddenError');
 
 const getMovies = (req, res, next) => Movies.find({ owner: req.user._id })
   .populate(['owner'])

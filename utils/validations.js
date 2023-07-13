@@ -2,7 +2,7 @@ const { celebrate, Joi } = require('celebrate');
 const { Types } = require('mongoose');
 const { URL } = require('validator');
 
-const { BadRequestError } = require('./errors');
+const { BadRequestError } = require('./errors/BadRequestError');
 
 const isURL = /^(https?:\/\/)(www\.)?(?!-)[-a-zA-Z0-9@:%._~#=]{1,249}(?<!-)\.[A-Za-z]{2,6}([-a-zA-Z0-9._~:/?#[\]@!$&'()*+,;=]*)#?$/;
 
@@ -13,12 +13,19 @@ const validationUrl = (url) => {
   throw new BadRequestError();
 };
 
+// const // validationLogin = celebrate({
+//   body: Joi.object().keys({
+//     email: Joi.string()
+//       .required()
+//       .email()
+//       .message('Поле email должно быть заполнено'),
+//     password: Joi.string().required(),
+//   }),
+// });
+
 const validationLogin = celebrate({
   body: Joi.object().keys({
-    email: Joi.string()
-      .required()
-      .email()
-      .message('Поле email должно быть заполнено'),
+    email: Joi.string().email().required(),
     password: Joi.string().required(),
   }),
 });

@@ -18,7 +18,7 @@ app.use(express.json());
 
 app.use(authLimiter);
 
-app.use(routes);
+app.use('/', routes);
 
 app.use(
   cors({
