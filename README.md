@@ -1,5 +1,8 @@
 # Бэкенд Диплома: Movies Explorer API. <br> Реализована в рамках учебной и практической работы на платформе [Яндекс.Практикум](https://praktikum.yandex.ru/) в факультете ["Веб-разработчик"](https://praktikum.yandex.ru/web/)
 
+## Ссылки:
+- Backend [http://api.deonis.nomoredomains.work/](http://api.deonis.nomoredomains.work/)
+
 ## Описание проекта
 [Репозиторий для дипломной работы Movies Explorer](https://github.com/Denis-Deonis/movies-explorer-api), включающий бэкенд часть приложения со следующими возможностями: авторизации и регистрации пользователей, операции с фильмами и пользователями.
 
