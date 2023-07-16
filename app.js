@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
@@ -8,18 +9,12 @@ const cors = require('cors');
 const authLimiter = require('./middlewares/rateLimiter');
 const { PORT, DB_PATH, BASE_URL } = require('./utils/config');
 const routes = require('./routes/index');
+const ServerError = require('./utils/errors/ServerError');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const app = express();
 
-app.use(helmet());
-app.use(bodyParser.json());
-app.use(cookieParser());
-app.use(express.json());
-
 app.use(authLimiter);
-
-app.use(routes);
-
 app.use(
   cors({
     origin: BASE_URL,
@@ -29,6 +24,18 @@ app.use(
     credentials: true,
   }),
 );
+
+app.use(helmet());
+app.use(bodyParser.json());
+app.use(cookieParser());
+app.use(express.json());
+
+app.use(requestLogger);
+
+app.use(routes);
+
+app.use(errorLogger);
+app.use(ServerError);
 
 mongoose
   .connect(DB_PATH)

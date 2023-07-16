@@ -1,33 +1,66 @@
 const { Movies } = require('../models/movie');
-const { SUCCESS_CREATED_CODE } = require('../utils/constants');
-const handleError = require('../utils/handleError');
-const ForbiddenError = require('../utils/errors/ForbiddenError');
+
+const {
+  NotFoundError,
+  BadRequestError,
+  ForbiddenError,
+} = require('../utils/errors/errors');
 
 module.exports.getAllMovies = (req, res, next) => {
   Movies.find({ owner: req.user._id })
     .then((movies) => res.send(movies.reverse()))
-    .catch((err) => handleError(err, next));
+    .catch(next);
 };
 
 module.exports.createMovie = (req, res, next) => {
-  Movies.create({ owner: req.user._id, ...req.body })
-    .then((newMovie) => {
-      Movies.findById(newMovie._id)
-        .populate(['owner'])
-        .then((movie) => res.status(SUCCESS_CREATED_CODE).send(movie));
-    })
-    .catch((err) => handleError(err, next));
+  const {
+    country,
+    director,
+    duration,
+    year,
+    description,
+    image,
+    trailerLink,
+    thumbnail,
+    movieId,
+    nameRU,
+    nameEN,
+  } = req.body;
+
+  Movies.create({
+    country,
+    director,
+    duration,
+    year,
+    description,
+    image,
+    trailerLink,
+    thumbnail,
+    owner: req.user._id,
+    movieId,
+    nameRU,
+    nameEN,
+  })
+    .then((movie) => res.send(movie))
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        return next(new NotFoundError('Неверные данные при публикации фильма'));
+      }
+      return next(err);
+    });
 };
 
 module.exports.deleteMovie = (req, res, next) => {
   const { movieId } = req.params;
   Movies.findById(movieId)
-    .orFail()
+    .orFail(new BadRequestError(`Фильм с таким Id: ${movieId} не найден`))
     .then((movie) => {
-      if (movie.owner.toString() === req.user._id) {
-        return movie.deleteOne().then(() => res.send(movie));
+      if (movie.owner.toString() !== req.user._id) {
+        return next(new ForbiddenError('Вы не можете удалить чужой фильм'));
       }
-      throw new ForbiddenError();
+      return movie;
     })
-    .catch((err) => handleError(err, next));
+    .then((movie) => Movies.deleteOne(movie))
+    .then(() => res.send({ message: 'Фильм удален' }))
+    .catch(next);
 };

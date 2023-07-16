@@ -24,6 +24,7 @@ const userSchema = new mongoose.Schema(
       select: false,
     },
   },
+  { versionKey: false },
 );
 
 module.exports = mongoose.model('user', userSchema);

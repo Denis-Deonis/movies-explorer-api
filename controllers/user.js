@@ -2,26 +2,35 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const { JWT_SECRET, NODE_ENV } = process.env;
-
 const Users = require('../models/user');
-const { handleError } = require('../utils/handleError');
-const { SUCCESS_CREATED_CODE } = require('../utils/constants');
 
-const UnauthorizedError = require('../utils/errors/UnauthorizedError');
+const {
+  NotFoundError,
+  UnathorizedError,
+  BadRequestError,
+  ConflictError,
+} = require('../utils/errors/errors');
 
 module.exports.createUser = (req, res, next) => {
   const { name, email, password } = req.body;
-  bcrypt.hash(password, 10)
-    .then((hash) => {
-      Users.create({ name, email, password: hash })
-        .then((user) => {
-          const userObj = user.toObject();
-          delete userObj.password;
-          res.status(SUCCESS_CREATED_CODE).send(userObj);
-        })
-        .catch((err) => handleError(err, next));
+
+  bcrypt
+    .hash(password, 10)
+    .then((hash) => Users.create({ name, email, password: hash }))
+    .then((user) => {
+      const userObj = user.toObject();
+      delete userObj.password;
+      res.status(201).send(userObj);
     })
-    .catch(next);
+    .catch((err) => {
+      if (err.code === 11000) {
+        return next(new ConflictError('Пользователь с таким адресом электронной почты уже зарегистрирован'));
+      }
+      if (err.name === 'ValidationError') {
+        return next(new NotFoundError('Отправленные неверные данные'));
+      }
+      return next(err);
+    });
 };
 
 module.exports.getCurrentUser = (req, res, next) => {
@@ -29,7 +38,15 @@ module.exports.getCurrentUser = (req, res, next) => {
   Users.findById(userId)
     .orFail()
     .then((user) => res.send(user))
-    .catch((err) => handleError(err, next));
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        return next(new NotFoundError('Отправленные неверные данные'));
+      }
+      if (err.name === 'DocumentNotFoundError') {
+        return next(new BadRequestError(`Пользователь с таким Id: ${userId} не найден`));
+      }
+      return next(res);
+    });
 };
 
 module.exports.updateProfile = (req, res, next) => {
@@ -38,9 +55,13 @@ module.exports.updateProfile = (req, res, next) => {
     new: true,
     runValidators: true,
   })
-    .orFail()
     .then((user) => res.send(user))
-    .catch((err) => handleError(err, next));
+    .catch((err) => {
+      if (err.name === 'CastError' || err.name === 'ValidationError') {
+        return next(new NotFoundError('Передан неверный id'));
+      }
+      return next(err);
+    });
 };
 
 module.exports.login = (req, res, next) => {
@@ -49,11 +70,11 @@ module.exports.login = (req, res, next) => {
     .select('+password')
     .then((user) => {
       if (!user) {
-        return next(new UnauthorizedError('Неверная почта или пароль'));
+        return next(new UnathorizedError('Неверная почта или пароль'));
       }
       return bcrypt.compare(password, user.password).then((matched) => {
         if (!matched) {
-          return next(new UnauthorizedError('Неверный пароль или почта'));
+          return next(new UnathorizedError('Неверный пароль или почта'));
         }
         const token = jwt.sign(
           { _id: user._id },
@@ -68,7 +89,7 @@ module.exports.login = (req, res, next) => {
         });
       });
     })
-    .catch((err) => handleError(err, next));
+    .catch(next);
 };
 
 module.exports.logout = (req, res) => res
