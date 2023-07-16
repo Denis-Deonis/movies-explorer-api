@@ -13,19 +13,9 @@ const validationUrl = (url) => {
   throw new BadRequestError();
 };
 
-// const // validationLogin = celebrate({
-//   body: Joi.object().keys({
-//     email: Joi.string()
-//       .required()
-//       .email()
-//       .message('Поле email должно быть заполнено'),
-//     password: Joi.string().required(),
-//   }),
-// });
-
 const validationLogin = celebrate({
   body: Joi.object().keys({
-    email: Joi.string().email().required(),
+    email: Joi.string().required().email(),
     password: Joi.string().required(),
   }),
 });

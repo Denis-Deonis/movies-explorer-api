@@ -6,18 +6,16 @@ const userSchema = new mongoose.Schema(
     name: {
       type: String,
       required: false,
-      default: 'Джеки Чан',
       minlength: [2, 'Минимальная длина поля 2 символа'],
       maxlength: [30, 'Максимальная длина поля 30 символов'],
     },
     email: {
       type: String,
       required: true,
-      default: 'some@email.ru',
       unique: true,
       validate: {
-        validator: (v) => validator.isEmail(v),
-        message: () => 'Введен некорректный адрес электронной почты',
+        validator: (email) => validator.isEmail(email),
+        message: 'Введен некорректный адрес электронной почты',
       },
     },
     password: {
@@ -26,7 +24,6 @@ const userSchema = new mongoose.Schema(
       select: false,
     },
   },
-  { versionKey: false },
 );
 
 module.exports = mongoose.model('user', userSchema);

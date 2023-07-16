@@ -1,9 +1,3 @@
-const { config } = require('dotenv');
-
-if (process.env.NODE_ENV === 'production') {
-  config();
-}
-
 const {
   PORT = 3000,
   DB_PATH = 'mongodb://127.0.0.1:27017/bitfilmsdb',
