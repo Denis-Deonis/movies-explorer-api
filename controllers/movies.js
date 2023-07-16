@@ -30,4 +30,4 @@ module.exports.deleteMovie = (req, res, next) => {
       throw new ForbiddenError();
     })
     .catch((err) => handleError(err, next));
-}
+};
