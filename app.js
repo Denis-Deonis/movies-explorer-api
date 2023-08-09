@@ -15,15 +15,7 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 const app = express();
 
 app.use(authLimiter);
-app.use(
-  cors({
-    origin: BASE_URL,
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    preflightContinue: false,
-    optionsSuccessStatus: 204,
-    credentials: true,
-  }),
-);
+app.use(cors());
 
 app.use(helmet());
 app.use(bodyParser.json());
