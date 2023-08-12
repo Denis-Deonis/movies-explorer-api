@@ -13,23 +13,7 @@ const ServerError = require('./utils/errors/ServerError');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const app = express();
-const options = {
-  origin: [
-    'http://localhost:3000',
-    'https://localhost:3000',
-    'http://localhost:3001',
-    'https://localhost:3001',
-    'http://deonis.nomoredomains.work',
-    'https://deonis.nomoredomains.work',
-  ],
-  methods: ['GET', 'PUT', 'HEAD', 'PATCH', 'POST', 'DELETE'],
-  preflightContinue: false,
-  optionsSuccessStatus: 204,
-  credentials: true,
-  allowedHeaders: ['Content-Type', 'origin', 'Authorization'],
-};
-
-app.use('*', cors(options));
+app.use(cors());
 
 app.use(authLimiter);
 
