@@ -1,5 +1,5 @@
 const {
-  PORT = 3000,
+  PORT = 3001,
   DB_PATH = 'mongodb://127.0.0.1:27017/bitfilmsdb',
   BASE_URL = 'http://localhost',
   LOGGER_BASE_URL = 'http://localhost:3100',
