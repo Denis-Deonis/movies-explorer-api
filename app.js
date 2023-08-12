@@ -7,7 +7,7 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors');
 
 const authLimiter = require('./middlewares/rateLimiter');
-const { PORT, DB_PATH, BASE_URL } = require('./utils/config');
+const { PORT, DB_PATH } = require('./utils/config');
 const routes = require('./routes/index');
 const ServerError = require('./utils/errors/ServerError');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
