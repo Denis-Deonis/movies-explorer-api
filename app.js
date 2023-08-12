@@ -19,6 +19,8 @@ const options = {
     'https://localhost:3000',
     'http://localhost:3001',
     'https://localhost:3001',
+    'http://deonis.nomoredomains.work',
+    'https://deonis.nomoredomains.work',
   ],
   methods: ['GET', 'PUT', 'HEAD', 'PATCH', 'POST', 'DELETE'],
   preflightContinue: false,
