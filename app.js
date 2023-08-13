@@ -15,12 +15,18 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 const app = express();
 
 
-app.use((_req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', '*');
-
-  next();
-});
+app.use(cors({
+  origin: [
+    'https://localhost:3000',
+    'http://localhost:3000',
+    'http://localhost:3001',
+    'https://localhost:3001',
+    'http://denis777.nomoreparties.co',
+    'https://denis777.nomoreparties.co',
+  ],
+  credentials: true,
+  maxAge: 30,
+}));
 
 app.use(authLimiter);
 
