@@ -15,13 +15,6 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 const app = express();
 app.use(cors());
 
-app.use((_req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', '*');
-
-  next();
-});
-
 app.use(authLimiter);
 
 app.use(helmet());
