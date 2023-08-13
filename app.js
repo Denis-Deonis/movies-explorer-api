@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-
+const cors = require('cors');
 
 const authLimiter = require('./middlewares/rateLimiter');
 const { PORT, DB_PATH } = require('./utils/config');
@@ -28,6 +28,8 @@ app.use(helmet());
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(express.json());
+
+app.use(cors());
 
 app.use(requestLogger);
 
