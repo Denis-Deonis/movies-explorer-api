@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const cors = require('cors');
+
 
 const authLimiter = require('./middlewares/rateLimiter');
 const { PORT, DB_PATH } = require('./utils/config');
@@ -13,7 +13,7 @@ const ServerError = require('./utils/errors/ServerError');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const app = express();
-app.use(cors());
+
 
 app.use((_req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
