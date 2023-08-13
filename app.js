@@ -23,6 +23,8 @@ app.use(cors({
     'https://localhost:3001',
     'http://denis777.nomoreparties.co',
     'https://denis777.nomoreparties.co',
+    'https://denis777.nomoreparties.co/signin',
+    'https://denis777.nomoreparties.co/signup'
   ],
   credentials: true,
   maxAge: 30,
