@@ -14,35 +14,25 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const app = express();
 
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", req.header('Origin'));
-  res.header("Access-Control-Allow-Credentials", true);
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE");
-  next();
-});
 
-// app.use(cors({
-//   origin: [
-//     'https://localhost:3000',
-//     'http://localhost:3000',
-//     'http://localhost:3001',
-//     'https://localhost:3001',
-//     'https://api.nomoreparties.co',
-//     'http://denis777.nomoreparties.co',
-//     'https://denis777.nomoreparties.co',
-//     'https://denis777.nomoreparties.co/signin',
-//     'https://denis777.nomoreparties.co/signup',
-//     'https://denis777.nomoreparties.co/signout',
-//     'https://denis777.nomoreparties.co/users/me',
-//     'https://denis777.nomoreparties.co/movies'
-//   ],
-//   credentials: true,
-//   maxAge: 30,
-// }));
+app.use(cors({
+  origin: [
+    'https://localhost:3000',
+    'http://localhost:3000',
+    'http://localhost:3001',
+    'https://localhost:3001',
+    'https://api.nomoreparties.co',
+    'http://denis777.nomoreparties.co',
+    'https://denis777.nomoreparties.co',
+    'https://denis777.nomoreparties.co/signin',
+    'https://denis777.nomoreparties.co/signup',
+    'https://denis777.nomoreparties.co/signout',
+    'https://denis777.nomoreparties.co/users/me',
+    'https://denis777.nomoreparties.co/movies',
+  ],
+  credentials: true,
+  maxAge: 30,
+}));
 
 app.use(authLimiter);
 
