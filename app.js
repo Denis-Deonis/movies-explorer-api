@@ -31,7 +31,7 @@ app.use(cors({
     'https://denis777.nomoreparties.co/movies',
   ],
   credentials: true,
-  maxAge: 30,
+  maxAge: 777000,
 }));
 
 app.use(authLimiter);
