@@ -1,8 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
-const { JWT_SECRET, NODE_ENV } = process.env;
-const Users = require('../models/user');
+const User = require('../models/user');
 
 const {
   NotFoundError,
@@ -10,6 +9,7 @@ const {
   ConflictError,
 } = require('../utils/errors/errors');
 
+const { JWT_SECRET } = process.env;
 
 const findUser = (id, res, next) => {
   User.findById(id)
@@ -23,76 +23,68 @@ const findUser = (id, res, next) => {
     });
 };
 
+module.exports.getMe = (req, res, next) => findUser(req.user._id, res, next);
+
 module.exports.createUser = (req, res, next) => {
   const { name, email, password } = req.body;
-
-  bcrypt
-    .hash(password, 10)
-    .then((hash) => Users.create({ name, email, password: hash }))
-    .then((user) => {
-      const userObj = user.toObject();
-      delete userObj.password;
-      res.status(201).send(userObj);
+  bcrypt.hash(password, 10).then((hash) => {
+    User.create({
+      email,
+      password: hash,
+      name,
     })
-    .catch((err) => {
-      if (err.code === 11000) {
-        return next(new ConflictError('Пользователь с таким адресом электронной почты уже зарегистрирован'));
-      }
-      if (err.name === 'ValidationError') {
-        return next(new NotFoundError('Отправленные неверные данные'));
-      }
-      return next(err);
-    });
-};
-
-module.exports.getCurrentUser = (req, res, next) => findUser(req.user._id, res, next)
-
-module.exports.updateProfile = (req, res, next) => {
-  const { name, email } = req.body;
-  Users.findByIdAndUpdate(req.user._id, { name, email }, {
-    new: true,
-    runValidators: true,
-  })
-    .then((user) => res.send(user))
-    .catch((err) => {
-      if (err.name === 'CastError' || err.name === 'ValidationError') {
-        return next(new NotFoundError('Передан неверный id'));
-      }
-      return next(err);
-    });
+      .then((user) => {
+        const userNoPassword = user.toObject({ useProjection: true });
+        return res.status(200).send(userNoPassword);
+      })
+      .catch((err) => {
+        if (err.name === 'ValidationError') {
+          return next(new BadRequestError('Переданы не валидные данные'));
+        }
+        if (err.code === 11000) {
+          return next(new ConflictError('Пользователь с данным email уже зарегистрирован'));
+        }
+        return next(err);
+      });
+  });
 };
 
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
-  return Users.findOne({ email })
+
+  User.findOne({ email })
     .select('+password')
     .then((user) => {
       if (!user) {
-        return next(new UnathorizedError('Неверная почта или пароль'));
+        return next(new UnauthorizedError('Неверная почта или пароль'));
       }
       return bcrypt.compare(password, user.password).then((matched) => {
         if (!matched) {
-          return next(new UnathorizedError('Неверный пароль или почта'));
+          return next(new UnauthorizedError('Неверная почта или пароль'));
         }
         const token = jwt.sign(
           { _id: user._id },
-          NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
-          { expiresIn: '7d' },
+          process.env.NODE_ENV === 'production' ? JWT_SECRET : 'some-secret-string',
+          {
+            expiresIn: '7d',
+          },
         );
-        res.cookie('jwt', token, { maxAge: 3600000 * 24 * 7, httpOnly: true, secure: true, sameSite: 'none' });
-        return res.send({
-          _id: user._id,
-          name: user.name,
-          email: user.email,
-        });
+        return res.send({ token });
       });
     })
     .catch(next);
 };
 
-module.exports.logout = (req, res) => res
-  .clearCookie('jwt', {
-    httpOnly: true,
-    sameSite: true,
-  })
-  .send({ message: 'Вы успешно вышели из системы' });
+const updateUser = (id, data, res, next) => {
+  User.findByIdAndUpdate(id, data, { new: true, runValidators: true })
+    .orFail()
+    .then((user) => res.send(user))
+    .catch((err) => {
+      if (err instanceof mongoose.Error.DocumentNotFoundError) {
+        return next(new NotFoundError('Пользователь не найден.'));
+      }
+      return next(err);
+    });
+};
+
+module.exports.updateUserName = (req, res, next) => updateUser(req.user._id, req.body, res, next);
