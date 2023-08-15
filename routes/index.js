@@ -3,8 +3,8 @@ const { errors } = require('celebrate');
 
 const auth  = require('../middlewares/auth');
 
-const moviesRouter = require('./movieRoutes');
-const usersRouter = require('./userRoutes');
+const moviesRouter = require('./movies');
+const usersRouter = require('./users');
 
 const { login, createUser } = require('../controllers/user');
 const { validateLogin, validateRegister } = require('../utils/validators/userValidator');
