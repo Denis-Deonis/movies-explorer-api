@@ -11,6 +11,18 @@ const {
   ConflictError,
 } = require('../utils/errors/errors');
 
+const findUser = (id, res, next) => {
+  Users.findById(id)
+    .orFail()
+    .then((user) => res.send(user))
+    .catch((err) => {
+      if (err instanceof mongoose.Error.DocumentNotFoundError) {
+        return next(new NotFoundError('Пользователь не найден'));
+      }
+      return next(err);
+    });
+};
+
 module.exports.createUser = (req, res, next) => {
   const { name, email, password } = req.body;
 
@@ -33,21 +45,7 @@ module.exports.createUser = (req, res, next) => {
     });
 };
 
-module.exports.getCurrentUser = (req, res, next) => {
-  const userId = req.user._id;
-  Users.findById(userId)
-    .orFail()
-    .then((user) => res.send(user))
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        return next(new NotFoundError('Отправленные неверные данные'));
-      }
-      if (err.name === 'DocumentNotFoundError') {
-        return next(new BadRequestError(`Пользователь с таким Id: ${userId} не найден`));
-      }
-      return next(res);
-    });
-};
+module.exports.getCurrentUser = (req, res, next) => findUser(req.user._id, res, next)
 
 module.exports.updateProfile = (req, res, next) => {
   const { name, email } = req.body;
