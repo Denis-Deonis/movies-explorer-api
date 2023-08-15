@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const { errors } = require('celebrate');
 
-const { auth } = require('../middlewares/auth');
+const auth  = require('../middlewares/auth');
 
 const moviesRouter = require('./movies');
 const usersRouter = require('./users');
