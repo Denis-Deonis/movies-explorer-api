@@ -7,8 +7,8 @@ const {
 } = require('../utils/errors/errors');
 
 module.exports.getAllMovies = (req, res, next) => {
-  Movies.find({ owner: req.user._id })
-    .then((movies) => res.send(movies.reverse()))
+  Movie.find({})
+    .then((movies) => res.send(movies))
     .catch(next);
 };
 
