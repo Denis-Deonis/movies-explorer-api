@@ -12,7 +12,7 @@ const {
 
 
 const findUser = (id, res, next) => {
-  User.findById(id)
+  Users.findById(id)
     .orFail()
     .then((user) => res.send(user))
     .catch((err) => {
