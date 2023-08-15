@@ -13,10 +13,12 @@ router.post('/signin', validationLogin, login);
 router.post('/signup', validationCreateUser, createUser);
 router.post('/signout', logout);
 
-router.use('/users', auth, usersRouter);
-router.use('/movies', auth, moviesRouter);
+router.use(auth);
 
-router.use('/*', auth, (req, res, next) => {
+router.use('/users', usersRouter);
+router.use('/movies', moviesRouter);
+
+router.use('/*', (req, res, next) => {
   next(new NotFoundError('Страница не найдена'));
 });
 
