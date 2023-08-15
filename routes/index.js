@@ -12,7 +12,7 @@ const { validateLogin, validateRegister } = require('../utils/validators/userVal
 const { errorLogger, requestLogger } = require('../middlewares/logger');
 
 router.use(requestLogger);
-app.use(cors({
+router.use(cors({
   origin: [
     'https://localhost:3000',
     'http://localhost:3000',
