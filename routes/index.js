@@ -2,6 +2,7 @@ const router = require('express').Router();
 const { errors } = require('celebrate');
 
 const auth  = require('../middlewares/auth');
+const cors = require('cors');
 
 const moviesRouter = require('./movies');
 const usersRouter = require('./users');
