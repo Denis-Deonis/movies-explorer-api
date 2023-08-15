@@ -7,7 +7,7 @@ const {
 } = require('../utils/errors/errors');
 
 module.exports.getAllMovies = (req, res, next) => {
-  Movie.find({})
+  Movies.find({})
     .then((movies) => res.send(movies))
     .catch(next);
 };
