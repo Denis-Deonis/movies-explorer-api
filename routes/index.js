@@ -8,7 +8,6 @@ const usersRouter = require('./userRoutes');
 
 const { login, createUser } = require('../controllers/user');
 const { validateLogin, validateRegister } = require('../utils/validators/userValidator');
-const auth = require('../middlewares/auth');
 
 const { errorLogger, requestLogger } = require('../middlewares/logger');
 
