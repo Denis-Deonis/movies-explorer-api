@@ -1,11 +1,10 @@
-const movieRoutes = require('express').Router();
+const moviesRouter = require('express').Router();
 
-const { getMovies, deleteMovie, createMovie } = require('../controllers/movies');
-const { validateMovieId, validateMovie } = require('../utils/validators/movieValidator');
+const { getAllMovies, createMovie, deleteMovie } = require('../controllers/movies');
+const { validationCreateMovie } = require('../utils/validations');
 
-movieRoutes.get('/', getMovies);
-movieRoutes.post('/', validateMovie, createMovie);
+moviesRouter.get('/', getAllMovies);
+moviesRouter.post('/', validationCreateMovie, createMovie);
+moviesRouter.delete('/:movieId', deleteMovie);
 
-movieRoutes.delete('/:movieId', validateMovieId, deleteMovie);
-
-module.exports = movieRoutes;
+module.exports = moviesRouter;

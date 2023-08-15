@@ -1,41 +1,41 @@
 const mongoose = require('mongoose');
-const { URL_REGEXP } = require('../utils/constants');
+const isURL = require('../utils/validations');
 
 const movieSchema = new mongoose.Schema(
   {
     country: {
       type: String,
-      required: [true, 'Поле должно быть заполнено'],
+      required: [true, 'Поле страна должно быть заполнено'],
     },
     director: {
       type: String,
-      required: [true, 'Поле должно быть заполнено'],
+      required: [true, 'Поле режиссер должно быть заполнено'],
     },
     duration: {
       type: Number,
-      required: [true, 'Поле должно быть заполнено'],
+      required: [true, 'Поле длительность фильма должно быть заполнено'],
     },
     year: {
       type: String,
-      required: [true, 'Поле должно быть заполнено'],
+      required: [true, 'Поле год выпуска должно быть заполнено'],
     },
     description: {
       type: String,
-      required: [true, 'Поле должно быть заполнено'],
+      required: [true, 'Поле описание должно быть заполнено'],
     },
     image: {
       type: String,
-      required: [true, 'Поле должно быть заполнено'],
+      required: [true, 'Поле афиша должно быть заполнено'],
       validate: {
-        validator: (v) => URL_REGEXP.test(v),
+        validator: (url) => isURL.test(url),
         message: 'Некорректный URL',
       },
     },
     trailerLink: {
       type: String,
-      required: [true, 'Поле должно быть заполнено'],
+      required: [true, 'Поле трейлер должно быть заполнено'],
       validate: {
-        validator: (v) => URL_REGEXP.test(v),
+        validator: (url) => isURL.test(url),
         message: 'Некорректный URL',
       },
     },
@@ -43,7 +43,7 @@ const movieSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Поле должно быть заполнено'],
       validate: {
-        validator: (v) => URL_REGEXP.test(v),
+        validator: (url) => isURL.test(url),
         message: 'Некорректный URL',
       },
     },
@@ -58,14 +58,16 @@ const movieSchema = new mongoose.Schema(
     },
     nameRU: {
       type: String,
-      required: [true, 'Поле должно быть заполнено'],
+      required: [true, 'Поле русское название фильма должно быть заполнено'],
     },
     nameEN: {
       type: String,
-      required: [true, 'Поле должно быть заполнено'],
+      required: [true, 'Поле английское название фильма должно быть заполнено'],
     },
   },
   { versionKey: false },
 );
 
-module.exports = mongoose.model('movie', movieSchema);
+const Movies = mongoose.model('movie', movieSchema);
+
+module.exports = { Movies };

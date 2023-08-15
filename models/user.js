@@ -6,18 +6,16 @@ const userSchema = new mongoose.Schema(
     name: {
       type: String,
       required: false,
-      default: 'Жак-Ив Кусто',
       minlength: [2, 'Минимальная длина поля 2 символа'],
       maxlength: [30, 'Максимальная длина поля 30 символов'],
     },
     email: {
       type: String,
       required: true,
-      default: 'some@email.com',
       unique: true,
       validate: {
-        validator: (v) => validator.isEmail(v),
-        message: () => 'Введен некорректный email адрес',
+        validator: (email) => validator.isEmail(email),
+        message: 'Введен некорректный адрес электронной почты',
       },
     },
     password: {
