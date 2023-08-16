@@ -18,6 +18,7 @@
     "nodemon": "^2.0.22"
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "bcrypt": "^5.0.1",
     "body-parser": "^1.20.2",
     "celebrate": "^15.0.1",
