@@ -1,14 +1,10 @@
-const { Movies } = require('../models/movie');
+const Movie = require('../models/movie');
+const NotFoundError = require('../errors/NotFoundError');
+const ForbiddenError = require('../errors/ForbiddenError');
 
-const {
-  NotFoundError,
-  BadRequestError,
-  ForbiddenError,
-} = require('../utils/errors/errors');
-
-module.exports.getAllMovies = (req, res, next) => {
-  Movies.find({ owner: req.user._id })
-    .then((movies) => res.send(movies.reverse()))
+module.exports.getMovies = (req, res, next) => {
+  Movie.find({ owner: req.user._id })
+    .then((data) => res.send(data))
     .catch(next);
 };
 
@@ -21,13 +17,12 @@ module.exports.createMovie = (req, res, next) => {
     description,
     image,
     trailerLink,
-    thumbnail,
-    movieId,
     nameRU,
     nameEN,
+    thumbnail,
+    movieId,
   } = req.body;
-
-  Movies.create({
+  Movie.create({
     country,
     director,
     duration,
@@ -35,32 +30,27 @@ module.exports.createMovie = (req, res, next) => {
     description,
     image,
     trailerLink,
-    thumbnail,
-    owner: req.user._id,
-    movieId,
     nameRU,
     nameEN,
+    thumbnail,
+    movieId,
+    owner: req.user._id,
   })
-    .then((movie) => res.send(movie))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        return next(new NotFoundError('Неверные данные при публикации фильма'));
-      }
-      return next(err);
-    });
+    .then((data) => res.status(201).send(data))
+    .catch(next);
 };
 
 module.exports.deleteMovie = (req, res, next) => {
-  const { movieId } = req.params;
-  Movies.findById(movieId)
-    .orFail(new BadRequestError(`Фильм с таким Id: ${movieId} не найден`))
-    .then((movie) => {
-      if (movie.owner.toString() !== req.user._id) {
-        return next(new ForbiddenError('Вы не можете удалить чужой фильм'));
+  Movie.findById(req.params.movieId)
+    .then((data) => {
+      if (!data) {
+        throw new NotFoundError('карточка с таким id не найдена');
+      } else if (!(req.user._id === data.owner.toString())) {
+        throw new ForbiddenError('нельзя удалить чужую карточку');
       }
-      return movie;
+      return Movie.deleteOne({ _id: data._id }).then(() => {
+        res.send(data);
+      });
     })
-    .then((movie) => Movies.deleteOne(movie))
-    .then(() => res.send({ message: 'Фильм удален' }))
     .catch(next);
 };

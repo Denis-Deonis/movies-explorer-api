@@ -1,25 +1,34 @@
 const router = require('express').Router();
-const { errors } = require('celebrate');
+const { celebrate, Joi } = require('celebrate');
 
-const { auth } = require('../middlewares/auth');
+const { createUser, login } = require('../controllers/users');
+const users = require('./users');
+const movies = require('./movies');
+const auth = require('../middlewares/auth');
+const NotFoundError = require('../errors/NotFoundError');
 
-const moviesRouter = require('./movies');
-const usersRouter = require('./users');
-const { login, createUser, logout } = require('../controllers/user');
-const NotFoundError = require('../utils/errors/NotFoundError');
-const { validationLogin, validationCreateUser } = require('../utils/validations');
+router.post('/signin', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().email(),
+    password: Joi.string().required(),
+  }),
+}), login);
 
-router.post('/signin', validationLogin, login);
-router.post('/signup', validationCreateUser, createUser);
-router.post('/signout', logout);
+router.post('/signup', celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().min(2).max(30).required(),
+    email: Joi.string().required().email(),
+    password: Joi.string().required(),
+  }),
+}), createUser);
 
-router.use('/users', auth, usersRouter);
-router.use('/movies', auth, moviesRouter);
+router.use(auth);
 
-router.use('/*', auth, (req, res, next) => {
-  next(new NotFoundError('Страница не найдена'));
+router.use('/movies', movies);
+router.use('/users', users);
+
+router.use('/', (req, res, next) => {
+  next(new NotFoundError('Данная страница не найдена'));
 });
-
-router.use(errors({ message: 'Ошибка валидации данных' }));
 
 module.exports = router;
