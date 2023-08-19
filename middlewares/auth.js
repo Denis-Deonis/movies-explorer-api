@@ -21,8 +21,6 @@ module.exports.validateToken = (req, res, next) => {
   } catch (err) {
     return next(new UnathorizedError('Authorization required'));
   }
-
   req.user = payload;
-
   return next();
 };
