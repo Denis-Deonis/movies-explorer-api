@@ -1,25 +1,35 @@
-const router = require('express').Router();
-const { errors } = require('celebrate');
+const router = require('express').Router()
+const { errors } = require('celebrate')
+const {
+  validateLogin,
+  validateCreateUser,
+} = require('../middlewares/celebrate')
+const { login, createUser } = require('../controllers/users')
 
-const { auth } = require('../middlewares/auth');
+// получение мидлвары для проверки токена в запросе
+const { validateToken } = require('../middlewares/auth')
+const usersRouter = require('./users')
+const moviesRouter = require('./movies')
+const { BadRequestError } = require('../utils/error')
 
-const moviesRouter = require('./movies');
-const usersRouter = require('./users');
-const { login, createUser, logout } = require('../controllers/user');
-const NotFoundError = require('../utils/errors/NotFoundError');
-const { validationLogin, validationCreateUser } = require('../utils/validations');
+router.post('/signin', validateLogin, login)
+router.post('/signup', validateCreateUser, createUser)
+router.get('/signout', (req, res) => {
+  res.clearCookie('jwt').send({ message: 'Exit' })
+})
 
-router.post('/signin', validationLogin, login);
-router.post('/signup', validationCreateUser, createUser);
-router.post('/signout', logout);
+router.use('/users', validateToken, usersRouter)
+router.use('/movies', validateToken, moviesRouter)
+router.use('/*', validateToken, (req, res, next) =>
+  next(new BadRequestError('Эта страница не найдена'))
+)
 
-router.use('/users', auth, usersRouter);
-router.use('/movies', auth, moviesRouter);
+router.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Сервер вот-вот выйдет из строя')
+  }, 0)
+})
 
-router.use('/*', auth, (req, res, next) => {
-  next(new NotFoundError('Страница не найдена'));
-});
+router.use(errors())
 
-router.use(errors({ message: 'Ошибка валидации данных' }));
-
-module.exports = router;
+module.exports = router

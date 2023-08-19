@@ -1,20 +1,25 @@
-const jwt = require('jsonwebtoken');
-
+// получаем переменные из .env среды
 const { NODE_ENV, JWT_SECRET } = process.env;
 
-const UnauthorizedError = require('../utils/errors/UnauthorizedError');
+// модуль для создания и подтверждения токенов
+const jwt = require('jsonwebtoken');
 
-module.exports.auth = (req, res, next) => {
+// подключаем 401 ошибку авторизации
+const { UnathorizedError } = require('../utils/error');
+
+module.exports.validateToken = (req, res, next) => {
+  // получаем токен из запроса
   const token = req.cookies.jwt;
   let payload;
 
   try {
+    // проверяем токен
     payload = jwt.verify(
       token,
       NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
     );
   } catch (err) {
-    return next(new UnauthorizedError('Необходима авторизация'));
+    return next(new UnathorizedError('Authorization required'));
   }
 
   req.user = payload;
