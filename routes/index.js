@@ -24,11 +24,11 @@ router.use('/*', validateToken, (req, res, next) =>
   next(new BadRequestError('Эта страница не найдена'))
 )
 
-router.get('/crash-test', () => {
-  setTimeout(() => {
-    throw new Error('Сервер вот-вот выйдет из строя')
-  }, 0)
-})
+// router.get('/crash-test', () => {
+//   setTimeout(() => {
+//     throw new Error('Сервер вот-вот выйдет из строя')
+//   }, 0)
+// })
 
 router.use(errors())
 
