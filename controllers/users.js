@@ -49,6 +49,7 @@ module.exports.login = (req, res, next) => {
           _id: user._id,
           name: user.name,
           email: user.email,
+          jwt: token
         })
       })
     })
