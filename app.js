@@ -11,7 +11,7 @@ const handleError = require('./middlewares/handleError')
 const { limiterSetting } = require('./utils/constants')
 const { requestLogger, errorLogger } = require('./middlewares/logger')
 
-const { PORT = 3000, DB_ADDRESS = 'mongodb127.0.0.1:27017/bitfilmsdb' } =
+const { PORT = 3000, DB_ADDRESS =  'mongodb://127.0.0.1:27017/bitfilmsdb' } =
   process.env
 
 const app = express()
