@@ -45,7 +45,12 @@ module.exports.login = (req, res, next) => {
         //   sameSite: true,
         // })
 
-        return res.status(200).send({ token })
+        return res.status(200).send({             
+              _id: user._id,
+              name: user.name,
+              email: user.email,
+              jwt: token
+            })
       })
     })
     .catch(next)
