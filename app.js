@@ -19,28 +19,30 @@ const app = express()
 const limiter = rateLimit(limiterSetting)
 app.use(limiter)
 
-app.use(
-  cors({
-    origin: [
-      'https://localhost:3000',
-      'http://localhost:3000',
-      'http://localhost:3001',
-      'https://localhost:3001',
-       'http://localhost:3003',
-      'https://localhost:3003',
-      'https://api.nomoreparties.co',
-      'http://denis777.nomoreparties.co',
-      'https://denis777.nomoreparties.co',
-      'https://denis777.nomoreparties.co/signin',
-      'https://denis777.nomoreparties.co/signup',
-      'https://denis777.nomoreparties.co/signout',
-      'https://denis777.nomoreparties.co/users/me',
-      'https://denis777.nomoreparties.co/movies',
-    ],
-    credentials: true,
-    maxAge: 30,
-  })
-)
+app.use(cors())
+
+// app.use(
+//   cors({
+//     origin: [
+//       'https://localhost:3000',
+//       'http://localhost:3000',
+//       'http://localhost:3001',
+//       'https://localhost:3001',
+//        'http://localhost:3003',
+//       'https://localhost:3003',
+//       'https://api.nomoreparties.co',
+//       'http://denis777.nomoreparties.co',
+//       'https://denis777.nomoreparties.co',
+//       'https://denis777.nomoreparties.co/signin',
+//       'https://denis777.nomoreparties.co/signup',
+//       'https://denis777.nomoreparties.co/signout',
+//       'https://denis777.nomoreparties.co/users/me',
+//       'https://denis777.nomoreparties.co/movies',
+//     ],
+//     credentials: true,
+//     maxAge: 30,
+//   })
+// )
 
 app.use(helmet())
 app.use(express.json())
