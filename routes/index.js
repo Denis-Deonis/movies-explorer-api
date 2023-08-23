@@ -1,6 +1,5 @@
 const router = require('express').Router()
 const { errors } = require('celebrate')
-const cors = require('cors');
 const {
   validateLogin,
   validateCreateUser,
@@ -12,8 +11,6 @@ const { validateToken } = require('../middlewares/auth')
 const usersRouter = require('./users')
 const moviesRouter = require('./movies')
 const { BadRequestError } = require('../utils/error')
-
-router.use(cors());
 
 router.post('/signin', validateLogin, login)
 router.post('/signup', validateCreateUser, createUser)
