@@ -11,40 +11,14 @@ const handleError = require('./middlewares/handleError')
 const { limiterSetting } = require('./utils/constants')
 const { requestLogger, errorLogger } = require('./middlewares/logger')
 
-const { PORT = 3003, DB_ADDRESS =  'mongodb://127.0.0.1:27017/bitfilmsdb' } =
-  process.env
+const { PORT = 3000, DB_ADDRESS =  'mongodb://127.0.0.1:27017/bitfilmsdb' } =  process.env;
 
 const app = express()
 
 const limiter = rateLimit(limiterSetting)
 app.use(limiter)
 
-app.use(
-  cors({
-    origin: [
-      'https://localhost:3000',
-      'http://localhost:3000',
-      'http://localhost:3001',
-      'https://localhost:3001',
-      'http://localhost:3002',
-      'https://localhost:3002',
-       'http://localhost:3003',
-      'https://localhost:3003',
-      'https://api.nomoreparties.co',
-      'http://denis777.nomoreparties.co',
-      'https://denis777.nomoreparties.co',
-      'https://denis777.nomoreparties.co/signin',
-      'https://denis777.nomoreparties.co/signup',
-      'https://denis777.nomoreparties.co/signout',
-      'https://denis777.nomoreparties.co/users/me',
-      'https://denis777.nomoreparties.co/movies',
-    ],
-    credentials: true,
-      "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
-      "preflightContinue": false,
-      "optionsSuccessStatus": 204
-  })
-)
+app.use(cors())
 
 
 

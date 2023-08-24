@@ -7,7 +7,8 @@ const {
 const { login, createUser } = require('../controllers/users')
 
 // получение мидлвары для проверки токена в запросе
-const { validateToken } = require('../middlewares/auth')
+const {auth} = require('../middlewares/auth');
+
 const usersRouter = require('./users')
 const moviesRouter = require('./movies')
 const { BadRequestError } = require('../utils/error')
@@ -18,9 +19,10 @@ router.get('/signout', (req, res) => {
   res.clearCookie('jwt').send({ message: 'Exit' })
 })
 
-router.use('/users', validateToken, usersRouter)
-router.use('/movies', validateToken, moviesRouter)
-router.use('/*', validateToken, (req, res, next) =>
+
+router.use('/users', auth, usersRouter)
+router.use('/movies', auth, moviesRouter)
+router.use('/*', auth, (req, res, next) =>
   next(new BadRequestError('Эта страница не найдена'))
 )
 
